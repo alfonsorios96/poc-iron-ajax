@@ -1,0 +1,6 @@
+{
+  "name": "poc",
+  "short_name": "poc",
+  "start_url": "/",
+  "display": "standalone"
+}

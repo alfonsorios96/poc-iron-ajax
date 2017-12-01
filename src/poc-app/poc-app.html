@@ -1,0 +1,52 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="poc-app">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+        <iron-ajax
+                id="apiRest"
+                url="https://demo2529033.mockable.io/user"
+                handle-as="json"
+                on-response="handleResponse"
+                debounce-duration="300"></iron-ajax>
+        <h2>[[message]]</h2>
+    </template>
+
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class PocApp extends Polymer.Element {
+            static get is() {
+                return 'poc-app';
+            }
+
+            static get properties() {
+                return {
+                    message: {
+                        type: String,
+                        value: ''
+                    }
+                };
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+                this.$.apiRest.generateRequest();
+            }
+
+            handleResponse() {
+                let response = this.$.apiRest.lastResponse;
+                this.set('message', response.msg);
+            }
+        }
+
+        window.customElements.define(PocApp.is, PocApp);
+    </script>
+</dom-module>
