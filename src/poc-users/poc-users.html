@@ -1,0 +1,115 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+
+<dom-module id="poc-users">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+
+            .container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: space-around;
+            }
+
+            paper-card {
+                max-width: 240px;
+                margin: 50px;
+            }
+
+            .cafe-header {
+                @apply --paper-font-headline;
+            }
+
+            .cafe-light {
+                color: var(--paper-grey-600);
+            }
+
+            .cafe-location {
+                float: right;
+                font-size: 15px;
+                vertical-align: middle;
+            }
+
+            .cafe-reserve {
+                color: var(--google-blue-500);
+            }
+
+        </style>
+        <iron-ajax
+                id="apiRest"
+                url="http://localhost:3000/users"
+                handle-as="json"
+                on-response="_handleResponse"
+                debounce-duration="300"></iron-ajax>
+        <div class="container">
+            <template is="dom-repeat" items="[[users]]" as="user">
+                <paper-card image="[[user.picture.large]]">
+                    <div class="card-content">
+                        <div class="cafe-header">Fullname: [[_getFullName(user)]]
+                        </div>
+                        <p>Username: [[user.login.username]]</p>
+                        <p class="cafe-light">
+                            Address: [[_getFullAddress(user)]]
+                        </p>
+                    </div>
+                </paper-card>
+            </template>
+        </div>
+    </template>
+
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class PocUsers extends Polymer.Element {
+            static get is() {
+                return 'poc-users';
+            }
+
+            static get properties() {
+                return {
+                    users: {
+                        type: Array,
+                        value: []
+                    }
+                };
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+                this.$.apiRest.generateRequest();
+            }
+
+            _handleResponse() {
+                let response = this.$.apiRest.lastResponse;
+                this.set('users', response);
+            }
+
+            _getFullName(user) {
+                let fullName = `${user.name.title}. ${user.name.first} ${user.name.last}`;
+                return this.__toTitleCase(fullName);
+            }
+
+            _getFullAddress(user) {
+                let fullAddress = `${user.location.street}, ${user.location.city}, ${user.location.state}`;
+                return fullAddress;
+            }
+
+            __toTitleCase(string) {
+                return string.replace(/\w\S*/g, (txt) => {
+                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                });
+            }
+        }
+
+        window.customElements.define(PocUsers.is, PocUsers);
+    </script>
+</dom-module>

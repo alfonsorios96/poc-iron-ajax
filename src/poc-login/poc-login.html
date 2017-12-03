@@ -1,0 +1,52 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+
+<dom-module id="poc-login">
+    <template>
+        <style>
+            .container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: space-around;
+
+                width: 300px;
+                border: 1px solid black;
+
+                margin:0 auto;
+            }
+        </style>
+
+        <div class="container">
+            <paper-input label="Type your username" id="username"></paper-input>
+            <paper-input label="Type your password" id="password" type="password"></paper-input>
+            <paper-button on-tap="login">Login</paper-button>
+        </div>
+    </template>
+
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class PocLogin extends Polymer.Element {
+            static get is() {
+                return 'poc-login';
+            }
+
+            login() {
+                let username = this.$.username.value || '';
+                let password = this.$.password.value || '';
+                let user = {
+                    username: username,
+                    password: password
+                }
+                console.log(user);
+            }
+        }
+
+        window.customElements.define(PocLogin.is, PocLogin);
+    </script>
+</dom-module>
